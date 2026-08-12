@@ -1,0 +1,23 @@
+site_name: Jibit IR SDK
+site_description: Unofficial Python SDK for Jibit APIs
+repo_url: https://github.com/shayanahrari/jibit-ir-sdk
+repo_name: shayanahrari/jibit-ir-sdk
+docs_dir: docs
+strict: true
+
+theme:
+  name: readthedocs
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - API support: api-support.md
+  - Source provenance: source-provenance.md
+  - Decisions:
+      - Package architecture: decisions/0001-package-architecture.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - tables
