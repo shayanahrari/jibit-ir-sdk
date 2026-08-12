@@ -9,3 +9,5 @@ are being prepared.
 ### Added
 
 - Initial package, documentation, quality tooling, and CI foundation.
+- Typed configuration, transport abstraction, structured exceptions, safe retry policy,
+  correlation IDs, redacted logging, audit hooks, and raw response access.

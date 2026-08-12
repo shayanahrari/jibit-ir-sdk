@@ -83,6 +83,10 @@ body optional. Consumers must not depend on undocumented body fields.
 ## Documentation
 
 - [Architecture](docs/architecture.md)
+- [Configuration](docs/configuration.md)
+- [Error handling](docs/error-handling.md)
+- [Logging and audit events](docs/logging.md)
+- [Retry and idempotency](docs/retry-and-idempotency.md)
 - [API support matrix](docs/api-support.md)
 - [Source provenance](docs/source-provenance.md)
 - [Security policy](SECURITY.md)

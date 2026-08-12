@@ -11,6 +11,10 @@ theme:
 nav:
   - Home: index.md
   - Architecture: architecture.md
+  - Configuration: configuration.md
+  - Error handling: error-handling.md
+  - Logging and audit: logging.md
+  - Retry and idempotency: retry-and-idempotency.md
   - API support: api-support.md
   - Source provenance: source-provenance.md
   - Decisions:
