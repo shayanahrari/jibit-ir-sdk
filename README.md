@@ -23,7 +23,7 @@ integration is available as an optional extra.
 
 | Service family | Package area | Status |
 | --- | --- | --- |
-| Payment Gateway (PPG) | `client.payment_gateway` | Planned |
+| Payment Gateway (PPG) | `client.payment_gateway` | Implemented |
 | Transfers and settlements | `client.transfers` | Planned |
 | Identicator and inquiries | `client.identicator` | Planned |
 | Biometric and KYC | `client.kyc` | Planned |
@@ -65,8 +65,11 @@ client = JibitClient.from_config(
 purchase = client.payment_gateway.create_purchase(
     amount=100_000,
     callback_url="https://example.com/payments/callback/",
-    client_reference="order-123",
+    client_reference_number="order-123",
 )
+
+print(purchase.data.purchase_id)
+print(purchase.data.psp_switching_url)
 ```
 
 Credentials must come from environment variables or a secrets manager. The SDK never
@@ -75,6 +78,11 @@ identity payloads.
 
 Service tokens are acquired and refreshed automatically. Shared multi-process deployments
 can inject Django Cache or Redis token storage and a distributed refresh lock.
+
+Payment and refund submissions are never blindly retried. If a create or refund request
+times out, keep the SDK correlation ID and reconcile using the purchase or refund inquiry
+operation before deciding whether another business action is safe. See the
+[Payment Gateway guide](docs/payment-gateway.md).
 
 ## Direct Debit response limitation
 
@@ -88,6 +96,7 @@ body optional. Consumers must not depend on undocumented body fields.
 - [Architecture](docs/architecture.md)
 - [Configuration](docs/configuration.md)
 - [Authentication](docs/authentication.md)
+- [Payment Gateway](docs/payment-gateway.md)
 - [Token storage](docs/token-storage.md)
 - [Error handling](docs/error-handling.md)
 - [Logging and audit events](docs/logging.md)

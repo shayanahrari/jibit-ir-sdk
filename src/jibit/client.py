@@ -21,6 +21,7 @@ from jibit.config import JibitConfig
 from jibit.engine import RequestEngine
 from jibit.logging import AuditSink, NullAuditSink, StructuredLogger, get_structured_logger
 from jibit.retry import RetryPolicy
+from jibit.services.payment_gateway import PaymentGatewayService
 from jibit.transport import HTTPTransport, HttpxTransport
 from jibit.types import ServiceName
 
@@ -64,6 +65,7 @@ class JibitClient:
         self._token_store = token_store or InMemoryTokenStore()
         self._lock_provider = lock_provider or ThreadLockProvider()
         self._authenticated_engines: dict[ServiceName, AuthenticatedRequestEngine] = {}
+        self._payment_gateway: PaymentGatewayService | None = None
         self._closed = False
 
     @classmethod
@@ -96,6 +98,17 @@ class JibitClient:
             authenticated = AuthenticatedRequestEngine(self._engine, authenticator)
             self._authenticated_engines[service] = authenticated
         return authenticated
+
+    @property
+    def payment_gateway(self) -> PaymentGatewayService:
+        """Return the lazily initialized Payment Gateway service facade."""
+        if self._payment_gateway is None:
+            self._payment_gateway = PaymentGatewayService(
+                self.authenticated_engine(ServiceName.PAYMENT_GATEWAY),
+                self.audit_sink,
+                self._logger,
+            )
+        return self._payment_gateway
 
     def close(self) -> None:
         """Release an internally owned transport exactly once."""

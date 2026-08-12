@@ -217,8 +217,27 @@ class RequestEngine:
         response: TransportResponse,
     ) -> JibitError:
         body = self._body_fields(response)
-        code = body.get("code") or body.get("errorCode") or body.get("error")
-        message = body.get("message") or body.get("detail") or body.get("description")
+        nested_errors = body.get("errors")
+        first_error = (
+            nested_errors[0]
+            if isinstance(nested_errors, list)
+            and nested_errors
+            and isinstance(nested_errors[0], dict)
+            else {}
+        )
+        code = (
+            body.get("code")
+            or body.get("errorCode")
+            or body.get("error")
+            or first_error.get("code")
+        )
+        message = (
+            body.get("message")
+            or body.get("detail")
+            or body.get("description")
+            or first_error.get("message")
+            or first_error.get("description")
+        )
         fingerprint = body.get("fingerprint")
         reference = body.get("referenceNumber") or body.get("reference_number")
         request_id = (

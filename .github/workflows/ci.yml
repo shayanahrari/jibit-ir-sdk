@@ -25,6 +25,7 @@ jobs:
       - run: mkdocs build --strict
       - run: python -m build
       - run: python -m twine check dist/*
+      - run: python -m pip_audit .
 
   test:
     runs-on: ubuntu-latest

@@ -210,6 +210,29 @@ def test_json_array_error_body_is_treated_as_unstructured() -> None:
         make_engine(transport).execute(options())
 
 
+def test_ppg_nested_error_contract_is_mapped_to_safe_context() -> None:
+    """PPG's errors array supplies its first code and message for diagnostics."""
+    transport = FakeTransport(
+        [
+            response(
+                409,
+                content=(
+                    b'{"fingerprint":"fp-2","errors":['
+                    b'{"code":"purchase.duplicated",'
+                    b'"message":"Rejected card 6037991111222233"}]}'
+                ),
+            )
+        ]
+    )
+
+    with pytest.raises(JibitBusinessError) as captured:
+        make_engine(transport).execute(options())
+
+    assert captured.value.context.error_code == "purchase.duplicated"
+    assert "6037991111222233" not in str(captured.value)
+    assert captured.value.context.fingerprint == "fp-2"
+
+
 @pytest.mark.parametrize("path", ["https://evil.example/path", "relative/path"])
 def test_absolute_or_non_rooted_endpoint_is_rejected(path: str) -> None:
     """Service operations cannot redirect credentials to arbitrary hosts."""

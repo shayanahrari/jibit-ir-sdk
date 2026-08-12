@@ -29,6 +29,7 @@ events include:
 - `jibit.request.retry_scheduled`
 - `jibit.token.refreshed`
 - `jibit.token.refresh_failed`
+- `jibit.audit.emit_failed`
 - `jibit.webhook.received`
 - `jibit.webhook.rejected`
 
@@ -41,3 +42,14 @@ are excluded by default.
 Operational logs and business audit events are separate. Applications may inject an
 `AuditSink` to persist already-redacted `AuditEvent` objects. The SDK does not require a
 database or choose retention, access-control, or regulatory policies for the application.
+
+Audit metadata is redacted before the configured sink receives it. A sink exception is
+reported as `jibit.audit.emit_failed` and does not replace a successful API result. This is
+important for financial submissions: an audit storage failure must not make an accepted
+payment look failed and invite a duplicate submission. Applications that require durable
+audit delivery should make their sink enqueue events reliably and monitor this event.
+
+Payment Gateway audit outcomes are `succeeded`, `failed`, or `unknown`. `unknown` is used
+for timeout, network, server, and malformed-response failures because the provider may have
+accepted a financial write before the response was lost. Consumers must reconcile these
+events and must not treat them as rejected transactions.

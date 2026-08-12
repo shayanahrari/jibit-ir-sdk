@@ -20,6 +20,7 @@ class EventName:
     TOKEN_ACQUIRED = "jibit.token.acquired"  # noqa: S105
     TOKEN_REFRESHED = "jibit.token.refreshed"  # noqa: S105
     TOKEN_REFRESH_FAILED = "jibit.token.refresh_failed"  # noqa: S105
+    AUDIT_EMIT_FAILED = "jibit.audit.emit_failed"
     WEBHOOK_RECEIVED = "jibit.webhook.received"
     WEBHOOK_REJECTED = "jibit.webhook.rejected"
 
@@ -50,6 +51,10 @@ class AuditEvent:
     outcome: str
     metadata: Mapping[str, Any] = field(default_factory=dict)
 
+    def __post_init__(self) -> None:
+        """Redact metadata before it reaches an application-owned audit sink."""
+        object.__setattr__(self, "metadata", cast(Mapping[str, Any], redact(self.metadata)))
+
     def safe_dict(self) -> dict[str, Any]:
         """Return a redacted representation suitable for an audit sink."""
         return cast(
@@ -71,7 +76,7 @@ class AuditSink(Protocol):
     """Receive redacted audit events for application-controlled persistence."""
 
     def emit(self, event: AuditEvent) -> None:
-        """Handle an audit event without blocking SDK correctness."""
+        """Handle an audit event; implementations should not raise exceptions."""
 
 
 class NullAuditSink:

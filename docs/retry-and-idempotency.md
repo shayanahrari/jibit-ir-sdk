@@ -22,3 +22,8 @@ operation. It never blindly resubmits the request.
 
 Applications should persist their own business reference before submission and enforce
 business-level idempotency independently of the SDK.
+
+For Payment Gateway purchase creation, use a unique `client_reference_number` and call
+`inquire_purchase(client_reference_number=...)` after a timeout. For refunds, retain the
+returned `refund_id`, `batch_id`, and `transfer_id`; if the submission outcome itself is
+unknown, reconcile the purchase and your own ledger before resubmitting anything.

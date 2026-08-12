@@ -11,7 +11,7 @@ Verification states:
 
 | Service | Authentication | Current status | Notes |
 | --- | --- | --- | --- |
-| Payment Gateway | Service token and refresh token | Planned | Four actions use documented empty successful responses. |
+| Payment Gateway | Bearer token with automatic acquisition and refresh | Implemented | Mock-tested from the available v3 contract; environment verification remains the integrator's responsibility. |
 | Cobank/transfers | Service token and refresh token | Planned | Financial submissions require reconciliation-safe behavior. |
 | Identicator | Service token and refresh token | Planned | Identity and banking fields require strict redaction. |
 | Biometric/KYC | Operation-specific authorization | Planned | Media and identity payloads are never logged. |
@@ -32,3 +32,31 @@ body for diagnostics:
 - `POST /directdebit/api/v1/blue-bank-callback`
 
 No consumer should depend on undocumented response fields.
+
+## Payment Gateway v3
+
+All operations below use automatic service-scoped bearer authentication. “Typed” means
+the documented response is validated before it is returned. “Status-only” means success
+is determined by the HTTP status and an optional body is preserved without interpretation.
+
+| SDK operation | HTTP contract | Model coverage | Retry classification | Verification |
+| --- | --- | --- | --- | --- |
+| `create_purchase` | `POST /ppg/v3/purchases` | Typed | Unsafe; never automatic | Implemented, mock-tested |
+| `filter_purchases` / `inquire_purchase` | `GET /ppg/v3/purchases` | Typed | Read-only | Implemented, mock-tested |
+| `verify_purchase` | `POST /ppg/v3/purchases/{purchaseId}/verify` | Typed | Idempotent | Implemented, mock-tested |
+| `reverse_purchase` | `POST /ppg/v3/purchases/reverse` | Typed | Idempotent | Implemented, mock-tested |
+| `refund_purchase` | `POST /ppg/v3/purchases/refund` | Typed | Unsafe; never automatic | Implemented, mock-tested |
+| `inquire_refund` | `GET /ppg/v3/purchases/refunds/{refundId}` | Typed | Read-only | Implemented, mock-tested |
+| `verify_refund` | `POST .../{refundId}/verify` | Status-only (`204`) | Unsafe; never automatic | Implemented, mock-tested |
+| `retry_refund` | `POST .../{refundId}/retry` | Status-only (`200`) | Unsafe; never automatic | Implemented, mock-tested |
+| `cancel_refund` | `POST .../{refundId}/cancel` | Status-only (`200`) | Unsafe; never automatic | Implemented, mock-tested |
+| `ignore_refund_cancellable_delay` | `POST .../{refundId}/ignore-cancellable` | Status-only (`200`) | Unsafe; never automatic | Implemented, mock-tested |
+| `list_terminals` | `GET /ppg/v3/terminals/list` | Typed | Read-only | Implemented, mock-tested |
+| `filter_settlements` | `GET /ppg/v3/settlements` | Typed | Read-only | Implemented, mock-tested |
+| `filter_purchase_histories` | `GET /ppg/v3/purchases/histories` | Typed | Read-only | Implemented, mock-tested |
+| `get_balances` | `GET /ppg/v3/balances` | Typed | Read-only | Implemented, mock-tested |
+| `health` | `GET /ppg/v3/app/health` | Typed | Read-only | Implemented, mock-tested |
+
+The four PPG refund actions above have documented successful statuses but no response-body
+schema. Their `APIResponse[StatusResult]` keeps `raw_body` only as uninterpreted bytes.
+Do not build business behavior around body fields observed in a particular environment.
