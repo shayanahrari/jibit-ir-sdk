@@ -27,6 +27,11 @@ client = JibitClient.from_config(
             "max_delay": 4,
             "jitter_ratio": 0.1,
         },
+        "auth": {
+            "expiry_leeway_seconds": 60,
+            "unknown_access_token_ttl_seconds": None,
+            "cache_key_prefix": "jibit:tokens",
+        },
     }
 )
 ```
@@ -41,6 +46,7 @@ an HTTP transport, logger, and audit sink into `JibitClient`.
 - Only operations explicitly classified as safe can be retried.
 - A private HTTP connection pool is closed by the client context manager.
 - An injected transport remains owned by the application and is never closed by the SDK.
+- Tokens are stored in a thread-safe in-memory store unless another store is injected.
 
 Do not disable TLS verification in production. Credentials should come from environment
 variables or a secrets manager and must never be stored in application source code.

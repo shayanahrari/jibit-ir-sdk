@@ -17,6 +17,7 @@ class EventName:
     REQUEST_COMPLETED = "jibit.request.completed"
     REQUEST_FAILED = "jibit.request.failed"
     RETRY_SCHEDULED = "jibit.request.retry_scheduled"
+    TOKEN_ACQUIRED = "jibit.token.acquired"  # noqa: S105
     TOKEN_REFRESHED = "jibit.token.refreshed"  # noqa: S105
     TOKEN_REFRESH_FAILED = "jibit.token.refresh_failed"  # noqa: S105
     WEBHOOK_RECEIVED = "jibit.webhook.received"

@@ -9,11 +9,20 @@ from typing import Any
 
 from typing_extensions import Self
 
+from jibit.auth import (
+    AuthenticatedRequestEngine,
+    InMemoryTokenStore,
+    LockProvider,
+    ServiceAuthenticator,
+    ThreadLockProvider,
+    TokenStore,
+)
 from jibit.config import JibitConfig
 from jibit.engine import RequestEngine
 from jibit.logging import AuditSink, NullAuditSink, StructuredLogger, get_structured_logger
 from jibit.retry import RetryPolicy
 from jibit.transport import HTTPTransport, HttpxTransport
+from jibit.types import ServiceName
 
 
 class JibitClient:
@@ -26,6 +35,8 @@ class JibitClient:
         transport: HTTPTransport | None = None,
         logger: logging.Logger | StructuredLogger | None = None,
         audit_sink: AuditSink | None = None,
+        token_store: TokenStore | None = None,
+        lock_provider: LockProvider | None = None,
     ) -> None:
         self.config = config
         self.audit_sink = audit_sink or NullAuditSink()
@@ -49,6 +60,10 @@ class JibitClient:
             logger=structured_logger,
             retry_policy=RetryPolicy(config.retry),
         )
+        self._logger = structured_logger
+        self._token_store = token_store or InMemoryTokenStore()
+        self._lock_provider = lock_provider or ThreadLockProvider()
+        self._authenticated_engines: dict[ServiceName, AuthenticatedRequestEngine] = {}
         self._closed = False
 
     @classmethod
@@ -65,6 +80,22 @@ class JibitClient:
     def request_engine(self) -> RequestEngine:
         """Expose the shared engine to domain service implementations."""
         return self._engine
+
+    def authenticated_engine(self, service: ServiceName) -> AuthenticatedRequestEngine:
+        """Return a lazily configured authenticated engine for a service."""
+        authenticated = self._authenticated_engines.get(service)
+        if authenticated is None:
+            authenticator = ServiceAuthenticator(
+                service=service,
+                config=self.config,
+                request_engine=self._engine,
+                token_store=self._token_store,
+                lock_provider=self._lock_provider,
+                logger=self._logger,
+            )
+            authenticated = AuthenticatedRequestEngine(self._engine, authenticator)
+            self._authenticated_engines[service] = authenticated
+        return authenticated
 
     def close(self) -> None:
         """Release an internally owned transport exactly once."""

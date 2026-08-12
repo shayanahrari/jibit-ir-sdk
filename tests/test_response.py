@@ -16,6 +16,9 @@ def test_raw_and_typed_response_access() -> None:
     assert raw.json() == {"value": 3}
     assert typed.data["value"] == 3
     assert status.raw_body == b"optional"
+    assert "value" not in repr(typed)
+    assert "optional" not in repr(status)
+    assert "content-type" not in repr(raw)
 
 
 def test_invalid_json_raises_structured_error() -> None:

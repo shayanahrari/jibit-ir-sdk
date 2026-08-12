@@ -8,6 +8,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, SecretStr, model_validator
 from typing_extensions import Self
 
+from jibit.__about__ import __version__
 from jibit.types import ServiceName
 
 
@@ -50,6 +51,16 @@ class LoggingConfig(BaseModel):
     include_payload_diagnostics: bool = False
 
 
+class AuthConfig(BaseModel):
+    """Configure token expiry handling and cache namespace behavior."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    expiry_leeway_seconds: int = Field(default=60, ge=0, le=3600)
+    unknown_access_token_ttl_seconds: int | None = Field(default=None, ge=60)
+    cache_key_prefix: str = Field(default="jibit:tokens", min_length=1, max_length=100)
+
+
 class ServiceCredentials(BaseModel):
     """Store common credential forms while keeping values out of representations."""
 
@@ -82,6 +93,7 @@ class ServiceConfig(BaseModel):
     credentials: ServiceCredentials
     base_url: HttpUrl | None = None
     enabled: bool = True
+    scopes: tuple[str, ...] = ()
 
 
 class JibitConfig(BaseModel):
@@ -92,10 +104,11 @@ class JibitConfig(BaseModel):
     base_url: HttpUrl = HttpUrl("https://napi.jibit.ir")
     timeout: TimeoutConfig = Field(default_factory=TimeoutConfig)
     retry: RetryConfig = Field(default_factory=RetryConfig)
+    auth: AuthConfig = Field(default_factory=AuthConfig)
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
     services: dict[ServiceName, ServiceConfig] = Field(default_factory=dict)
     verify_ssl: bool = True
-    user_agent: str = Field(default="jibit-ir-sdk/0.1.0", min_length=1)
+    user_agent: str = Field(default=f"jibit-ir-sdk/{__version__}", min_length=1)
 
     @classmethod
     def from_mapping(cls, value: Mapping[str, Any]) -> Self:

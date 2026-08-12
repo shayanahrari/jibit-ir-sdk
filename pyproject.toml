@@ -104,6 +104,7 @@ ignore = ["S101"]
 
 [tool.ruff.lint.per-file-ignores]
 "examples/**/*.py" = ["T201"]
+"src/jibit/auth/specs.py" = ["S106"]
 "tests/**/*.py" = ["S101", "S105", "S106"]
 
 [tool.mypy]

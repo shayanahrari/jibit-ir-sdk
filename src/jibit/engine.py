@@ -46,10 +46,10 @@ class RequestOptions:
     method: str
     path: str
     safety: OperationSafety
-    headers: Mapping[str, str] = field(default_factory=dict)
-    params: Mapping[str, Any] | None = None
-    json: Any = None
-    content: bytes | None = None
+    headers: Mapping[str, str] = field(default_factory=dict, repr=False)
+    params: Mapping[str, Any] | None = field(default=None, repr=False)
+    json: Any = field(default=None, repr=False)
+    content: bytes | None = field(default=None, repr=False)
     idempotency_key: str | None = None
     correlation_id: str | None = None
 

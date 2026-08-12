@@ -12,6 +12,8 @@ nav:
   - Home: index.md
   - Architecture: architecture.md
   - Configuration: configuration.md
+  - Authentication: authentication.md
+  - Token storage: token-storage.md
   - Error handling: error-handling.md
   - Logging and audit: logging.md
   - Retry and idempotency: retry-and-idempotency.md

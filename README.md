@@ -73,6 +73,9 @@ Credentials must come from environment variables or a secrets manager. The SDK n
 logs credentials, authorization headers, tokens, OTPs, or unredacted financial and
 identity payloads.
 
+Service tokens are acquired and refreshed automatically. Shared multi-process deployments
+can inject Django Cache or Redis token storage and a distributed refresh lock.
+
 ## Direct Debit response limitation
 
 Five documented Direct Debit operations declare successful HTTP responses without a
@@ -84,6 +87,8 @@ body optional. Consumers must not depend on undocumented body fields.
 
 - [Architecture](docs/architecture.md)
 - [Configuration](docs/configuration.md)
+- [Authentication](docs/authentication.md)
+- [Token storage](docs/token-storage.md)
 - [Error handling](docs/error-handling.md)
 - [Logging and audit events](docs/logging.md)
 - [Retry and idempotency](docs/retry-and-idempotency.md)

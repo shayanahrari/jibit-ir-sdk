@@ -11,7 +11,7 @@ from jibit.exceptions import ErrorContext, JibitResponseError
 ResponseT = TypeVar("ResponseT")
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, repr=False)
 class RawResponse:
     """Expose transport-neutral response data for advanced consumers."""
 
@@ -19,6 +19,12 @@ class RawResponse:
     headers: dict[str, str]
     content: bytes
     correlation_id: str
+
+    def __repr__(self) -> str:
+        return (
+            f"RawResponse(status_code={self.status_code}, content_length={len(self.content)}, "
+            f"correlation_id={self.correlation_id!r})"
+        )
 
     @property
     def text(self) -> str:
@@ -39,18 +45,27 @@ class RawResponse:
             ) from exc
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, repr=False)
 class APIResponse(Generic[ResponseT]):
     """Pair a typed result with its raw HTTP response."""
 
     data: ResponseT
     raw: RawResponse
 
+    def __repr__(self) -> str:
+        return f"APIResponse(data=[REDACTED], raw={self.raw!r})"
 
-@dataclass(frozen=True, slots=True)
+
+@dataclass(frozen=True, slots=True, repr=False)
 class StatusResult:
     """Represent success for an operation without a documented response schema."""
 
     success: bool
     status_code: int
     raw_body: bytes | None = None
+
+    def __repr__(self) -> str:
+        return (
+            f"StatusResult(success={self.success}, status_code={self.status_code}, "
+            f"has_raw_body={self.raw_body is not None})"
+        )

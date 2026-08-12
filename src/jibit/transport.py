@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 import httpx
@@ -17,10 +17,10 @@ class TransportRequest:
 
     method: str
     url: str
-    headers: Mapping[str, str]
-    params: Mapping[str, Any] | None = None
-    json: Any = None
-    content: bytes | None = None
+    headers: Mapping[str, str] = field(repr=False)
+    params: Mapping[str, Any] | None = field(default=None, repr=False)
+    json: Any = field(default=None, repr=False)
+    content: bytes | None = field(default=None, repr=False)
     timeout: TimeoutConfig | None = None
 
 
