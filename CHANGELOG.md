@@ -6,6 +6,8 @@ are being prepared.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-08-12
+
 ### Added
 
 - Initial package, documentation, quality tooling, and CI foundation.
@@ -29,3 +31,8 @@ are being prepared.
   verification, and deduplication extension points.
 - Optional Django settings integration with process-local client lifecycle and Django Cache
   token storage, plus release metadata, compatibility policy, and production checklist.
+- English documentation with a Persian README introduction and a clear link to Jibit's
+  official website while retaining the SDK's independent, unofficial status.
+
+[Unreleased]: https://github.com/shayanahrari/jibit-ir-sdk/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/shayanahrari/jibit-ir-sdk/releases/tag/v0.1.0

@@ -31,16 +31,16 @@ Django ساده‌تر کند.
 - پشتیبانی اختیاری از Django Cache و Redis برای نگهداری توکن؛
 - دسترسی به سرویس‌های مختلف از طریق یک `JibitClient` ساده و یکپارچه.
 
-برای نصب نسخهٔ توسعه از checkout محلی:
+برای نصب پکیج از PyPI:
 
 ```bash
-python -m pip install -e .
+python -m pip install jibit-ir-sdk
 ```
 
 برای استفاده در Django:
 
 ```bash
-python -m pip install -e ".[django]"
+python -m pip install "jibit-ir-sdk[django]"
 ```
 
 پس از قرار دادن تنظیمات در `settings.py` می‌توان client مشترک پروژه را به شکل زیر دریافت
@@ -83,17 +83,17 @@ See the [API support matrix](docs/api-support.md) for operation-level verificati
 
 ## Installation
 
-The package is not yet published. During development, install it from a local checkout:
+Install the package from PyPI:
 
 ```bash
-python -m pip install -e .
+python -m pip install jibit-ir-sdk
 ```
 
 Optional integrations:
 
 ```bash
-python -m pip install -e ".[django]"
-python -m pip install -e ".[redis]"
+python -m pip install "jibit-ir-sdk[django]"
+python -m pip install "jibit-ir-sdk[redis]"
 ```
 
 Python 3.10 through 3.13 are supported. Django 5.2 through 6.0 is supported through the
