@@ -23,3 +23,7 @@ are being prepared.
   receipts, balances, usage, bank status, and batch generation; Cobank settlement creation,
   reconciliation, batch inquiry, listing, account discovery, and receipt controls with
   isolated token scopes and conservative financial retry behavior.
+- Direct Debit mandate and collection lifecycle with five explicitly status-only operations,
+  Pulse SMS simple, pattern, bulk, status, and inbound operations, MzaHub contract creation,
+  inquiry, cancellation, and signed-document download, plus fail-closed callback parsing,
+  verification, and deduplication extension points.

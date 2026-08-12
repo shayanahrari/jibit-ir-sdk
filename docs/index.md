@@ -19,3 +19,7 @@ environment-verification requirements.
 For wallet-to-IBAN batches and Cobank settlement processing, see the
 [transfers and settlements guide](transfers-and-settlements.md). It explains the separate
 authentication scopes and mandatory reconciliation workflow for uncertain outcomes.
+
+The [Direct Debit guide](direct-debit.md), [SMS and contracts guide](sms-and-contracts.md),
+and [webhook guide](webhooks.md) cover the remaining service families and callback trust
+boundaries.

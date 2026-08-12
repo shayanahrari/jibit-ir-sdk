@@ -16,9 +16,9 @@ Verification states:
 | Cobank settlements | Automatic scoped token and refresh | Unverified | Mock-tested from the consolidated catalog; routes, scopes, and transfer limits require environment confirmation. |
 | Identicator | Bearer token with automatic acquisition and refresh | Implemented | Mock-tested; deeply nested legal, foreigner, cheque, and corporation payloads use typed envelopes with raw nested mappings. |
 | Biometric/KYC | Configured static bearer token | Unverified | Mock-tested from conflicting catalog/snapshot contracts; environment confirmation is required. |
-| Direct Debit | Authentication and refresh token | Planned | Five operations are status-only. |
-| Pulse SMS | Authentication and refresh token | Planned | Message content is sensitive and excluded from logs. |
-| MzaHub contracts | Login and refresh token | Planned | Signed documents and identity data are excluded from logs. |
+| Direct Debit | Automatic token and refresh | Unverified | Mock-tested from the catalog; five operations are status-only. |
+| Pulse SMS | Automatic token and refresh | Unverified | Mock-tested from the catalog; message content is excluded from logs. |
+| MzaHub contracts | Automatic login and refresh | Unverified | Mock-tested from the catalog; signed documents and signer identity are excluded from logs. |
 
 ## Known Direct Debit response limitation
 
@@ -33,6 +33,28 @@ body for diagnostics:
 - `POST /directdebit/api/v1/blue-bank-callback`
 
 No consumer should depend on undocumented response fields.
+
+Other exposed Direct Debit operations include typed mandate initiation, collection,
+transaction inquiry, subscription transaction listing, mandate inquiry by either provider
+or creditor reference, and active-bank discovery. Mandate creation and collection are
+unsafe and never automatically retried. The callback forwarding method accepts only a
+validated body, but applications must verify callback authenticity before calling it.
+
+## Pulse SMS
+
+Simple, pattern, and bulk sends are typed and never automatically retried. Message, pattern
+parameters, sender, receptor, and bulk contents are excluded from diagnostics. Status
+inquiry by provider or client message ID, bulk inquiry, and inbound-message paging are
+read-only. All operations are mock-tested and remain environment-unverified.
+
+## MzaHub contracts
+
+Contract creation accepts PDF bytes, validates the PDF signature and signer input, then
+uses the catalog's JSON/base64 contract. Creation and cancellation are unsafe and never
+automatically replayed; inquiry and signed-document download are read-only. `X-REAL-IP` is
+required explicitly and validated as an IP address. Merchant signing-workflow and signature
+extraction endpoints are not exposed because their sensitive media and workflow contracts
+have not been verified. All implemented operations remain environment-unverified.
 
 ## Payment Gateway v3
 

@@ -28,9 +28,9 @@ integration is available as an optional extra.
 | Cobank settlements | `client.cobank` | Implemented; environment verification required |
 | Identicator and inquiries | `client.identicator` | Implemented |
 | Biometric and KYC | `client.kyc` | Implemented; environment verification required |
-| Direct Debit | `client.direct_debit` | Planned |
-| Pulse SMS | `client.sms` | Planned |
-| MzaHub contracts | `client.contracts` | Planned |
+| Direct Debit | `client.direct_debit` | Implemented; environment verification required |
+| Pulse SMS | `client.sms` | Implemented; environment verification required |
+| MzaHub contracts | `client.contracts` | Implemented; environment verification required |
 
 See the [API support matrix](docs/api-support.md) for operation-level verification status.
 
@@ -105,6 +105,9 @@ body optional. Consumers must not depend on undocumented body fields.
 - [Payment Gateway](docs/payment-gateway.md)
 - [Identicator and KYC](docs/identity-and-kyc.md)
 - [Transfers and settlements](docs/transfers-and-settlements.md)
+- [Direct Debit](docs/direct-debit.md)
+- [Pulse SMS and MzaHub contracts](docs/sms-and-contracts.md)
+- [Webhooks and callbacks](docs/webhooks.md)
 - [Token storage](docs/token-storage.md)
 - [Error handling](docs/error-handling.md)
 - [Logging and audit events](docs/logging.md)

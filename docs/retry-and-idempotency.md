@@ -33,3 +33,9 @@ For Transferor, persist a unique `batch_id` and unique `transfer_id` values, the
 `record_track_id` and call `client.cobank.inquire_settlement(record_track_id)`. These
 business references support reconciliation; the available contracts do not establish a
 provider idempotency header, so the SDK does not claim that resubmitting them is safe.
+
+For Direct Debit, persist creditor mandate and transaction references and reconcile through
+the corresponding inquiry. SMS sends can be billable and user-visible, so retain client
+message or bulk references and inquire rather than blindly sending again. For MzaHub,
+persist `track_id` and inquire before recreating a contract. Cancellation is terminal and
+is never automatically replayed.

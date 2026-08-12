@@ -27,6 +27,18 @@ client = JibitClient.from_config(
         "kyc": {
             "access_token": os.environ["JIBIT_KYC_ACCESS_TOKEN"],
         },
+        "direct_debit": {
+            "api_key": os.environ["JIBIT_DIRECT_DEBIT_API_KEY"],
+            "secret_key": os.environ["JIBIT_DIRECT_DEBIT_SECRET_KEY"],
+        },
+        "sms": {
+            "api_key": os.environ["JIBIT_SMS_API_KEY"],
+            "secret_key": os.environ["JIBIT_SMS_SECRET_KEY"],
+        },
+        "contracts": {
+            "api_key": os.environ["JIBIT_MZAHUB_API_KEY"],
+            "secret_key": os.environ["JIBIT_MZAHUB_SECRET_KEY"],
+        },
         "timeout": {
             "connect": 5,
             "read": 30,

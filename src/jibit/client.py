@@ -24,9 +24,12 @@ from jibit.logging import AuditSink, NullAuditSink, StructuredLogger, get_struct
 from jibit.retry import RetryPolicy
 from jibit.services.base import AuditedRequestExecutor
 from jibit.services.cobank import CobankService
+from jibit.services.contracts import ContractService
+from jibit.services.direct_debit import DirectDebitService
 from jibit.services.identicator import IdenticatorService
 from jibit.services.kyc import KycService
 from jibit.services.payment_gateway import PaymentGatewayService
+from jibit.services.sms import PulseSmsService
 from jibit.services.transfer import TransferService
 from jibit.transport import HTTPTransport, HttpxTransport
 from jibit.types import ServiceName
@@ -74,6 +77,9 @@ class JibitClient:
         self._payment_gateway: PaymentGatewayService | None = None
         self._transfers: TransferService | None = None
         self._cobank: CobankService | None = None
+        self._direct_debit: DirectDebitService | None = None
+        self._sms: PulseSmsService | None = None
+        self._contracts: ContractService | None = None
         self._identicator: IdenticatorService | None = None
         self._kyc: KycService | None = None
         self._closed = False
@@ -147,6 +153,48 @@ class JibitClient:
                 )
             )
         return self._cobank
+
+    @property
+    def direct_debit(self) -> DirectDebitService:
+        """Return the lazily initialized Direct Debit facade."""
+        if self._direct_debit is None:
+            self._direct_debit = DirectDebitService(
+                AuditedRequestExecutor(
+                    self.authenticated_engine(ServiceName.DIRECT_DEBIT),
+                    audit_sink=self.audit_sink,
+                    logger=self._logger,
+                    event_name="jibit.direct_debit.operation",
+                )
+            )
+        return self._direct_debit
+
+    @property
+    def sms(self) -> PulseSmsService:
+        """Return the lazily initialized Pulse SMS facade."""
+        if self._sms is None:
+            self._sms = PulseSmsService(
+                AuditedRequestExecutor(
+                    self.authenticated_engine(ServiceName.SMS),
+                    audit_sink=self.audit_sink,
+                    logger=self._logger,
+                    event_name="jibit.sms.operation",
+                )
+            )
+        return self._sms
+
+    @property
+    def contracts(self) -> ContractService:
+        """Return the lazily initialized MzaHub contracts facade."""
+        if self._contracts is None:
+            self._contracts = ContractService(
+                AuditedRequestExecutor(
+                    self.authenticated_engine(ServiceName.CONTRACTS),
+                    audit_sink=self.audit_sink,
+                    logger=self._logger,
+                    event_name="jibit.contract.operation",
+                )
+            )
+        return self._contracts
 
     @property
     def identicator(self) -> IdenticatorService:
