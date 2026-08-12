@@ -40,3 +40,5 @@ Public APIs follow Semantic Versioning. During `0.x`, confirmed upstream behavio
 require model refinements; changes are documented in the changelog and support matrix.
 After `1.0.0`, removals require deprecation in a prior minor release unless a security
 issue makes continued support unsafe.
+
+See the full [versioning and compatibility policy](versioning.md).

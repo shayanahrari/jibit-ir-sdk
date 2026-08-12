@@ -27,3 +27,5 @@ are being prepared.
   Pulse SMS simple, pattern, bulk, status, and inbound operations, MzaHub contract creation,
   inquiry, cancellation, and signed-document download, plus fail-closed callback parsing,
   verification, and deduplication extension points.
+- Optional Django settings integration with process-local client lifecycle and Django Cache
+  token storage, plus release metadata, compatibility policy, and production checklist.

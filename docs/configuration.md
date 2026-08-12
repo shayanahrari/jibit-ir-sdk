@@ -61,7 +61,10 @@ client = JibitClient.from_config(
 ```
 
 Credentials may also be nested under a `services` mapping. Advanced consumers can inject
-an HTTP transport, logger, and audit sink into `JibitClient`.
+an HTTP transport, token store, lock provider, logger, audit sink, retry policy, sleep
+function, wall clock, monotonic clock, and correlation-ID factory directly into
+`JibitClient`. These extension points support application observability and deterministic
+testing without changing safe defaults.
 
 ## Safe defaults
 

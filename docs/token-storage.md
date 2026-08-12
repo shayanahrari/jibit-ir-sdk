@@ -28,6 +28,9 @@ from jibit.auth.django import DjangoCacheTokenStore
 token_store = DjangoCacheTokenStore(alias="jibit")
 ```
 
+The higher-level `jibit.django.get_jibit_client()` facade can enable this adapter through
+`JIBIT["integration"]["use_django_cache"]`. See the [Django guide](django.md).
+
 ## Security requirements
 
 Token caches contain credentials capable of authorizing API requests. Production cache

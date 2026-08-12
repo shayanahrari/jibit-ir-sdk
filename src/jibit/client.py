@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Mapping
+import time
+import uuid
+from collections.abc import Callable, Mapping
 from types import TracebackType
 from typing import Any
 
@@ -47,6 +49,11 @@ class JibitClient:
         audit_sink: AuditSink | None = None,
         token_store: TokenStore | None = None,
         lock_provider: LockProvider | None = None,
+        retry_policy: RetryPolicy | None = None,
+        sleep: Callable[[float], None] = time.sleep,
+        clock: Callable[[], float] = time.time,
+        monotonic: Callable[[], float] = time.monotonic,
+        correlation_id_factory: Callable[[], str] = lambda: str(uuid.uuid4()),
     ) -> None:
         self.config = config
         self.audit_sink = audit_sink or NullAuditSink()
@@ -68,11 +75,15 @@ class JibitClient:
             config=config,
             transport=self._transport,
             logger=structured_logger,
-            retry_policy=RetryPolicy(config.retry),
+            retry_policy=retry_policy or RetryPolicy(config.retry),
+            sleep=sleep,
+            monotonic=monotonic,
+            correlation_id_factory=correlation_id_factory,
         )
         self._logger = structured_logger
         self._token_store = token_store or InMemoryTokenStore()
         self._lock_provider = lock_provider or ThreadLockProvider()
+        self._clock = clock
         self._authenticated_engines: dict[ServiceName, AuthenticatedRequestEngine] = {}
         self._payment_gateway: PaymentGatewayService | None = None
         self._transfers: TransferService | None = None
@@ -110,6 +121,7 @@ class JibitClient:
                 token_store=self._token_store,
                 lock_provider=self._lock_provider,
                 logger=self._logger,
+                clock=self._clock,
             )
             authenticated = AuthenticatedRequestEngine(self._engine, authenticator)
             self._authenticated_engines[service] = authenticated

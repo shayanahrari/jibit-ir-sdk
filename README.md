@@ -49,6 +49,9 @@ python -m pip install -e ".[django]"
 python -m pip install -e ".[redis]"
 ```
 
+Python 3.10 through 3.13 are supported. Django 5.2 through 6.0 is supported through the
+optional `django` extra. The core package does not install Django or Redis.
+
 ## Intended usage
 
 ```python
@@ -80,6 +83,16 @@ identity payloads.
 Service tokens are acquired and refreshed automatically. Shared multi-process deployments
 can inject Django Cache or Redis token storage and a distributed refresh lock.
 
+For Django, define `JIBIT = {...}` in settings and use:
+
+```python
+from jibit.django import get_jibit_client
+
+client = get_jibit_client()
+```
+
+See the [Django integration guide](docs/django.md) for cache and logging configuration.
+
 Payment and refund submissions are never blindly retried. If a create or refund request
 times out, keep the SDK correlation ID and reconcile using the purchase or refund inquiry
 operation before deciding whether another business action is safe. See the
@@ -108,11 +121,14 @@ body optional. Consumers must not depend on undocumented body fields.
 - [Direct Debit](docs/direct-debit.md)
 - [Pulse SMS and MzaHub contracts](docs/sms-and-contracts.md)
 - [Webhooks and callbacks](docs/webhooks.md)
+- [Django integration](docs/django.md)
 - [Token storage](docs/token-storage.md)
 - [Error handling](docs/error-handling.md)
 - [Logging and audit events](docs/logging.md)
 - [Retry and idempotency](docs/retry-and-idempotency.md)
 - [API support matrix](docs/api-support.md)
+- [Versioning and compatibility](docs/versioning.md)
+- [Production checklist](docs/production-checklist.md)
 - [Source provenance](docs/source-provenance.md)
 - [Security policy](SECURITY.md)
 - [Contributing](CONTRIBUTING.md)

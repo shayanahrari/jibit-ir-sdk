@@ -48,7 +48,6 @@ class LoggingConfig(BaseModel):
 
     logger_name: str = Field(default="jibit_sdk", min_length=1)
     enabled: bool = True
-    include_payload_diagnostics: bool = False
 
 
 class AuthConfig(BaseModel):

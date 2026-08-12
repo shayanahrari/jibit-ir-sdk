@@ -20,3 +20,5 @@ The SDK is responsible for safe request construction, token handling, redaction,
 classification, and callback parsing. Applications remain responsible for authorization,
 business-level idempotency, secret storage, database security, callback routing, log
 retention, and regulatory obligations.
+
+See the [production checklist](docs/production-checklist.md) for deployment controls.

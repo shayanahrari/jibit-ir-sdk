@@ -15,7 +15,7 @@ authors = [
 ]
 keywords = ["jibit", "payment", "fintech", "django", "sdk", "iran"]
 classifiers = [
-  "Development Status :: 2 - Pre-Alpha",
+  "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
@@ -25,6 +25,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Topic :: Office/Business :: Financial",
+  "Framework :: Django",
   "Typing :: Typed",
 ]
 dependencies = [
@@ -34,11 +35,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-django = ["Django>=4.2"]
+django = ["Django>=5.2,<6.1"]
 redis = ["redis>=5,<7"]
 dev = [
   "build>=1.2",
-  "Django>=4.2",
+  "Django>=5.2,<6.1",
   "hatchling>=1.27",
   "mkdocs-material>=9.5",
   "mypy>=1.11",
@@ -53,8 +54,10 @@ dev = [
 
 [project.urls]
 Documentation = "https://github.com/shayanahrari/jibit-ir-sdk#readme"
+Changelog = "https://github.com/shayanahrari/jibit-ir-sdk/blob/main/CHANGELOG.md"
 Issues = "https://github.com/shayanahrari/jibit-ir-sdk/issues"
 Repository = "https://github.com/shayanahrari/jibit-ir-sdk"
+Security = "https://github.com/shayanahrari/jibit-ir-sdk/security/policy"
 
 [tool.hatch.version]
 path = "src/jibit/__about__.py"

@@ -20,6 +20,8 @@ pytest --cov=jibit --cov-report=term-missing
 mkdocs build --strict
 python -m build
 python -m twine check dist/*
+python -m pip_audit .
+python -m pip check
 ```
 
 ## Contribution rules

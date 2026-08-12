@@ -20,10 +20,13 @@ nav:
   - Direct Debit: direct-debit.md
   - SMS and contracts: sms-and-contracts.md
   - Webhooks and callbacks: webhooks.md
+  - Django integration: django.md
   - Error handling: error-handling.md
   - Logging and audit: logging.md
   - Retry and idempotency: retry-and-idempotency.md
   - API support: api-support.md
+  - Versioning and compatibility: versioning.md
+  - Production checklist: production-checklist.md
   - Source provenance: source-provenance.md
   - Decisions:
       - Package architecture: decisions/0001-package-architecture.md

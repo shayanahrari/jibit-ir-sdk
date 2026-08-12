@@ -23,3 +23,7 @@ authentication scopes and mandatory reconciliation workflow for uncertain outcom
 The [Direct Debit guide](direct-debit.md), [SMS and contracts guide](sms-and-contracts.md),
 and [webhook guide](webhooks.md) cover the remaining service families and callback trust
 boundaries.
+
+Django applications should use the [Django integration guide](django.md). Before a live
+deployment, review the [production checklist](production-checklist.md) and the
+[versioning policy](versioning.md).
