@@ -11,6 +11,7 @@ from jibit.transport import (
     TransportRequest,
     TransportTimeoutError,
 )
+from jibit.types import ContentPartType, MultipartPart
 
 
 @respx.mock
@@ -34,6 +35,39 @@ def test_httpx_transport_sends_and_reads_response() -> None:
     assert result.status_code == 200
     assert result.content == b'{"ok":true}'
     assert route.calls[0].request.headers["User-Agent"] == "test-sdk"
+
+
+@respx.mock
+def test_httpx_transport_encodes_multipart_without_unsafe_representations() -> None:
+    """Multipart fields and files are encoded at the transport boundary only."""
+    route = respx.post("https://example.test/upload").mock(return_value=httpx.Response(200))
+    transport = HttpxTransport(verify_ssl=True, user_agent="test-sdk")
+    file_part = MultipartPart(
+        "live_face",
+        ContentPartType.FILE,
+        b"sensitive-image-bytes",
+        filename="face.jpg",
+        content_type="image/jpeg",
+    )
+
+    transport.send(
+        TransportRequest(
+            "POST",
+            "https://example.test/upload",
+            {},
+            multipart=(
+                MultipartPart("ssn", ContentPartType.FIELD, "0013547891"),
+                file_part,
+            ),
+        )
+    )
+    transport.close()
+
+    request = route.calls[0].request
+    assert "multipart/form-data" in request.headers["Content-Type"]
+    assert b'name="ssn"' in request.content
+    assert b'filename="face.jpg"' in request.content
+    assert "sensitive-image-bytes" not in repr(file_part)
 
 
 @pytest.mark.parametrize(

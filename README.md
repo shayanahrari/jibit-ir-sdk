@@ -25,8 +25,8 @@ integration is available as an optional extra.
 | --- | --- | --- |
 | Payment Gateway (PPG) | `client.payment_gateway` | Implemented |
 | Transfers and settlements | `client.transfers` | Planned |
-| Identicator and inquiries | `client.identicator` | Planned |
-| Biometric and KYC | `client.kyc` | Planned |
+| Identicator and inquiries | `client.identicator` | Implemented |
+| Biometric and KYC | `client.kyc` | Implemented; environment verification required |
 | Direct Debit | `client.direct_debit` | Planned |
 | Pulse SMS | `client.sms` | Planned |
 | MzaHub contracts | `client.contracts` | Planned |
@@ -97,6 +97,7 @@ body optional. Consumers must not depend on undocumented body fields.
 - [Configuration](docs/configuration.md)
 - [Authentication](docs/authentication.md)
 - [Payment Gateway](docs/payment-gateway.md)
+- [Identicator and KYC](docs/identity-and-kyc.md)
 - [Token storage](docs/token-storage.md)
 - [Error handling](docs/error-handling.md)
 - [Logging and audit events](docs/logging.md)

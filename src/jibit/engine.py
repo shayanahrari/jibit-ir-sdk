@@ -34,7 +34,7 @@ from jibit.transport import (
     TransportResponse,
     TransportTimeoutError,
 )
-from jibit.types import ServiceName
+from jibit.types import MultipartPart, ServiceName
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,6 +50,7 @@ class RequestOptions:
     params: Mapping[str, Any] | None = field(default=None, repr=False)
     json: Any = field(default=None, repr=False)
     content: bytes | None = field(default=None, repr=False)
+    multipart: tuple[MultipartPart, ...] | None = field(default=None, repr=False)
     idempotency_key: str | None = None
     correlation_id: str | None = None
 
@@ -107,6 +108,7 @@ class RequestEngine:
                         params=options.params,
                         json=options.json,
                         content=options.content,
+                        multipart=options.multipart,
                         timeout=self._config.timeout,
                     )
                 )
@@ -266,7 +268,7 @@ class RequestEngine:
                 )
             ),
         )
-        error_message = str(message) if message else f"Jibit returned HTTP {response.status_code}"
+        error_message = f"Jibit returned HTTP {response.status_code}"
         if response.status_code == 401:
             return JibitAuthenticationError(error_message, context=context)
         if response.status_code == 403:

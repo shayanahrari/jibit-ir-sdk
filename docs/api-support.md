@@ -13,8 +13,8 @@ Verification states:
 | --- | --- | --- | --- |
 | Payment Gateway | Bearer token with automatic acquisition and refresh | Implemented | Mock-tested from the available v3 contract; environment verification remains the integrator's responsibility. |
 | Cobank/transfers | Service token and refresh token | Planned | Financial submissions require reconciliation-safe behavior. |
-| Identicator | Service token and refresh token | Planned | Identity and banking fields require strict redaction. |
-| Biometric/KYC | Operation-specific authorization | Planned | Media and identity payloads are never logged. |
+| Identicator | Bearer token with automatic acquisition and refresh | Implemented | Mock-tested; deeply nested legal, foreigner, cheque, and corporation payloads use typed envelopes with raw nested mappings. |
+| Biometric/KYC | Configured static bearer token | Unverified | Mock-tested from conflicting catalog/snapshot contracts; environment confirmation is required. |
 | Direct Debit | Authentication and refresh token | Planned | Five operations are status-only. |
 | Pulse SMS | Authentication and refresh token | Planned | Message content is sensitive and excluded from logs. |
 | MzaHub contracts | Login and refresh token | Planned | Signed documents and identity data are excluded from logs. |
@@ -60,3 +60,37 @@ is determined by the HTTP status and an optional body is preserved without inter
 The four PPG refund actions above have documented successful statuses but no response-body
 schema. Their `APIResponse[StatusResult]` keeps `raw_body` only as uninterpreted bytes.
 Do not build business behavior around body fields observed in a particular environment.
+
+## Identicator
+
+Identicator operations use automatic service-specific token acquisition and refresh.
+Banking, postal, matching, identity, legal identity, foreigner identity, military status,
+Sana, corporation, cheque, balance, usage-report, availability, and health inquiries are
+implemented and tested at the mocked transport boundary. All operations are read-only or
+idempotent inquiry POSTs; retry behavior is bounded to transient failures.
+
+Core banking, postal, civil identity, matching, similarity, balance, and health fields have
+dedicated typed models. Very large and provider-evolving legal, foreigner, corporation, and
+cheque subtrees are held in typed response envelopes as raw nested mappings. Their data is
+available to advanced consumers, but individual nested keys are not a stable SDK guarantee.
+
+## Biometric and KYC
+
+| SDK operation | Catalog contract | Model coverage | Verification |
+| --- | --- | --- | --- |
+| `verify_video` | `POST /alpha/v2/kyc` | Typed envelope, flexible result data | Mock-tested, environment-unverified |
+| `verify_photo` | `POST /alpha/v2/authorization` | Typed envelope, flexible result data | Mock-tested, environment-unverified |
+| `ocr_national_card` | `POST /alpha/ocr` | Typed envelope, flexible OCR data | Mock-tested, environment-unverified |
+| `ocr_cheque` | `POST /alpha/cheque` | Typed envelope, flexible OCR data | Mock-tested, environment-unverified |
+| `ocr_bank_card` | `POST /alpha/bank/card` | Typed envelope, flexible OCR data | Mock-tested, environment-unverified |
+
+The available KYC documentation snapshot includes an `/alpha/api/...` prefix while the
+newer consolidated catalog declares `/alpha/...`. The SDK follows the catalog and supports
+per-service `base_url` overrides, but the routes must be verified in an authorized Jibit
+environment before production use. The catalog describes success as a JSON string while
+examples show a JSON object; both forms are parsed into a safe typed envelope.
+
+KYC token acquisition and refresh are not documented. The SDK requires a supplied static
+bearer token and does not guess an authentication lifecycle. Media is validated, isolated in
+multipart parts, excluded from representations, and never logged. All KYC POST operations
+are classified unsafe and are not automatically retried.

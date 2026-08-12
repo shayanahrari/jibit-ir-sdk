@@ -16,3 +16,6 @@ are being prepared.
 - Typed Payment Gateway v3 purchase, verification, reversal, refund, inquiry, settlement,
   terminal, balance, and health operations with status-only refund actions, audit events,
   and reconciliation-safe retry classification.
+- Typed Identicator banking, identity, postal, matching, legal, social, cheque, balance,
+  reporting, availability, and health inquiries; KYC multipart video, photo, and OCR
+  operations using explicit static bearer authentication and media-safe diagnostics.

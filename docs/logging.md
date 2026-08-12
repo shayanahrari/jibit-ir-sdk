@@ -37,6 +37,10 @@ Tokens, secrets, authorization headers, OTPs, national identifiers, card data, I
 mobile numbers, KYC media, images, and videos are redacted. Request and response payloads
 are excluded by default.
 
+Birth dates, account numbers, FIDA values, biometric face fields, filenames, and multipart
+media fields are also treated as sensitive keys. Application logs must apply the same rule
+to values obtained after the SDK returns a typed response.
+
 ## Audit events
 
 Operational logs and business audit events are separate. Applications may inject an
@@ -53,3 +57,8 @@ Payment Gateway audit outcomes are `succeeded`, `failed`, or `unknown`. `unknown
 for timeout, network, server, and malformed-response failures because the provider may have
 accepted a financial write before the response was lost. Consumers must reconcile these
 events and must not treat them as rejected transactions.
+
+Identicator and KYC operations emit `jibit.identicator.operation` and
+`jibit.kyc.operation`. These events contain only operation context, outcome, status, and
+safe error classification. They never contain inquiry parameters, identity values,
+filenames, media, or response payloads.

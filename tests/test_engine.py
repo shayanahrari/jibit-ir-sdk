@@ -188,6 +188,8 @@ def test_http_errors_map_to_structured_exception_types(
     error = captured.value
     assert "6219861028500042" not in str(error)
     assert error.context.error_code == "provider.error"
+    assert error.context.safe_dict()["upstream_message"] == "[REDACTED]"
+    assert error.context.upstream_message == "[REDACTED]"
     assert error.context.fingerprint == "fp-1"
     assert error.context.reference_number == "ref-1"
 

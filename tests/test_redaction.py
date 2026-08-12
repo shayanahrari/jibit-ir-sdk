@@ -12,6 +12,10 @@ def test_sensitive_keys_are_removed_recursively() -> None:
             "nested": [{"otpCode": "123456"}, {"safe": "visible"}],
         },
         "imageUrl": "https://private.example/image.jpg",
+        "birthDate": "13600101",
+        "fida": "foreign-id",
+        "iban": "IR820540102680020817909002",
+        "mediaFile": "private.jpg",
     }
 
     safe = redact(payload)
@@ -21,6 +25,10 @@ def test_sensitive_keys_are_removed_recursively() -> None:
     assert safe["customer"]["nested"][0]["otpCode"] == REDACTED
     assert safe["customer"]["nested"][1]["safe"] == "visible"
     assert safe["imageUrl"] == REDACTED
+    assert safe["birthDate"] == REDACTED
+    assert safe["fida"] == REDACTED
+    assert safe["iban"] == REDACTED
+    assert safe["mediaFile"] == REDACTED
 
 
 def test_free_text_identifiers_are_masked() -> None:

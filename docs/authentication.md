@@ -16,7 +16,9 @@ Supported automatic token contracts:
 | MzaHub contracts | API key and secret key | Refresh token |
 
 KYC authentication is not inferred because the currently available contract does not
-describe a safe automatic token flow for that service.
+describe a safe automatic token flow for that service. Supply an already issued KYC bearer
+token as `kyc.access_token`. The SDK attaches it but does not invent an expiry or refresh
+contract. The token remains secret-safe in configuration and request representations.
 
 ## Expiry handling
 

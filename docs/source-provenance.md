@@ -11,7 +11,7 @@ minimum metadata necessary to explain implementation provenance.
 | Identicator technical documentation | Version 1.5.2, October 2024 | Inquiry and identity behavior | Not distributed |
 | Identity-service technical documentation | Version 2.6.1, September 2025 | Identity verification behavior | Not distributed |
 | Payment Gateway documentation | Retrieved August 2026 | PPG operations and empty response behavior | Not distributed |
-| KYC documentation snapshot | Retrieved August 2026 | KYC operation discovery | Not distributed |
+| KYC documentation snapshot | Retrieved August 2026 | KYC operation discovery and contract comparison | Not distributed |
 
 ## Provenance policy
 
@@ -19,3 +19,5 @@ minimum metadata necessary to explain implementation provenance.
 - Source PDFs, screenshots, catalogs, logos, and confidential text are not copied.
 - Incomplete or conflicting upstream behavior is identified in the API support matrix.
 - A source contract must be confirmed before an operation is marked stable.
+- When source contracts conflict, the selected contract and unresolved difference are
+  recorded in the API support matrix instead of silently choosing a stable behavior.

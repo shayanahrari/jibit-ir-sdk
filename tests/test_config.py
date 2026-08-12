@@ -43,6 +43,19 @@ def test_nested_service_configuration_and_url_override() -> None:
     assert str(config.service(ServiceName.SMS).base_url) == "https://sandbox.example.test/"
 
 
+def test_static_access_token_is_a_supported_exclusive_credential_method() -> None:
+    """KYC can use a supplied bearer token without inventing a refresh contract."""
+    config = JibitConfig.from_mapping({"kyc": {"access_token": "static-bearer"}})
+
+    token = config.service(ServiceName.KYC).credentials.access_token
+
+    assert token is not None
+    assert token.get_secret_value() == "static-bearer"
+    assert "static-bearer" not in repr(config)
+    with pytest.raises(ValidationError, match="exactly one"):
+        ServiceCredentials(api_key="key", secret_key="secret", access_token="static-bearer")
+
+
 @pytest.mark.parametrize(
     "credentials",
     [

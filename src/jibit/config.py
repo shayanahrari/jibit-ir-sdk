@@ -70,17 +70,21 @@ class ServiceCredentials(BaseModel):
     secret_key: SecretStr | None = None
     username: SecretStr | None = None
     password: SecretStr | None = None
+    access_token: SecretStr | None = None
 
     @model_validator(mode="after")
     def require_a_complete_credential_pair(self) -> Self:
         """Require either an API-key pair or a username/password pair."""
         api_pair = self.api_key is not None or self.secret_key is not None
         user_pair = self.username is not None or self.password is not None
+        token = self.access_token is not None
         if api_pair and (self.api_key is None or self.secret_key is None):
             raise ValueError("api_key and secret_key must be configured together")
         if user_pair and (self.username is None or self.password is None):
             raise ValueError("username and password must be configured together")
-        if not api_pair and not user_pair:
+        if sum((api_pair, user_pair, token)) > 1:
+            raise ValueError("configure exactly one supported credential method")
+        if not api_pair and not user_pair and not token:
             raise ValueError("a supported credential pair is required")
         return self
 
@@ -118,7 +122,7 @@ class JibitConfig(BaseModel):
         for service in ServiceName:
             if service.value in raw:
                 services[service] = raw.pop(service.value)
-        credential_keys = {"api_key", "secret_key", "username", "password"}
+        credential_keys = {"api_key", "secret_key", "username", "password", "access_token"}
         for service_name, raw_service in services.items():
             if isinstance(raw_service, Mapping) and "credentials" not in raw_service:
                 raw_service = dict(raw_service)

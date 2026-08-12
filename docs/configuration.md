@@ -15,6 +15,9 @@ client = JibitClient.from_config(
             "api_key": os.environ["JIBIT_PPG_API_KEY"],
             "secret_key": os.environ["JIBIT_PPG_SECRET_KEY"],
         },
+        "kyc": {
+            "access_token": os.environ["JIBIT_KYC_ACCESS_TOKEN"],
+        },
         "timeout": {
             "connect": 5,
             "read": 30,
@@ -50,3 +53,7 @@ an HTTP transport, logger, and audit sink into `JibitClient`.
 
 Do not disable TLS verification in production. Credentials should come from environment
 variables or a secrets manager and must never be stored in application source code.
+
+Credential methods are mutually exclusive per service. Token-managed services use an
+`api_key` and `secret_key`; KYC currently uses a supplied `access_token` because no safe
+acquisition or refresh contract is available. A static token is never refreshed implicitly.

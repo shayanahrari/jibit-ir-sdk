@@ -9,6 +9,7 @@ from typing import Any, Protocol
 import httpx
 
 from jibit.config import TimeoutConfig
+from jibit.types import ContentPartType, MultipartPart
 
 
 @dataclass(frozen=True, slots=True)
@@ -21,6 +22,7 @@ class TransportRequest:
     params: Mapping[str, Any] | None = field(default=None, repr=False)
     json: Any = field(default=None, repr=False)
     content: bytes | None = field(default=None, repr=False)
+    multipart: tuple[MultipartPart, ...] | None = field(default=None, repr=False)
     timeout: TimeoutConfig | None = None
 
 
@@ -71,6 +73,19 @@ class HttpxTransport:
             else None
         )
         try:
+            files: list[tuple[str, tuple[str | None, bytes | str, str | None]]] | None = None
+            if request.multipart is not None:
+                files = [
+                    (
+                        part.name,
+                        (
+                            part.filename if part.kind is ContentPartType.FILE else None,
+                            part.value,
+                            part.content_type,
+                        ),
+                    )
+                    for part in request.multipart
+                ]
             response = self._client.request(
                 request.method,
                 request.url,
@@ -78,6 +93,7 @@ class HttpxTransport:
                 params=request.params,
                 json=request.json,
                 content=request.content,
+                files=files,
                 timeout=httpx_timeout,
             )
         except httpx.TimeoutException as exc:

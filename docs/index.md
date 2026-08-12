@@ -11,3 +11,7 @@ and API support matrix before using an operation in a production system.
 Payment Gateway v3 is the first implemented domain. See the
 [Payment Gateway guide](payment-gateway.md) for purchase initialization, callback handling,
 verification, reversal, refund, inquiry, and uncertain-outcome guidance.
+
+For banking inquiries, identity matching, civil identity data, and biometric uploads, read
+the [Identicator and KYC guide](identity-and-kyc.md), including its data-minimization and
+environment-verification requirements.

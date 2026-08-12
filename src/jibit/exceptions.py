@@ -7,7 +7,7 @@ from typing import Any
 
 from typing_extensions import Self
 
-from jibit.redaction import redact_text
+from jibit.redaction import REDACTED, redact_text
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,10 +27,21 @@ class ErrorContext:
     correlation_id: str | None = None
     retryable: bool = False
 
+    def __post_init__(self) -> None:
+        """Discard provider free text because it can contain customer data."""
+        if self.upstream_message is not None:
+            object.__setattr__(self, "upstream_message", REDACTED)
+
     def safe_dict(self) -> dict[str, Any]:
         """Return populated context fields with free-text identifiers redacted."""
         return {
-            field: redact_text(value) if isinstance(value, str) else value
+            field: (
+                REDACTED
+                if field == "upstream_message"
+                else redact_text(value)
+                if isinstance(value, str)
+                else value
+            )
             for field in (item.name for item in fields(self))
             if (value := getattr(self, field)) is not None
         }
