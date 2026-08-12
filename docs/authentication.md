@@ -9,7 +9,8 @@ Supported automatic token contracts:
 | Service | Initial authentication | Refresh request |
 | --- | --- | --- |
 | Payment Gateway | API key and secret key | Refresh token |
-| Cobank/transfers | API key, secret key, and optional scopes | Access and refresh tokens |
+| Transferor v2 | API key and secret key | Access and refresh tokens |
+| Cobank settlements | API key, secret key, and optional scopes | Access and refresh tokens |
 | Identicator | API key and secret key | Access and refresh tokens |
 | Direct Debit | API key and secret key | Access and refresh tokens |
 | Pulse SMS | API key and secret key | Access and refresh tokens |

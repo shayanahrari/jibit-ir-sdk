@@ -62,3 +62,8 @@ Identicator and KYC operations emit `jibit.identicator.operation` and
 `jibit.kyc.operation`. These events contain only operation context, outcome, status, and
 safe error classification. They never contain inquiry parameters, identity values,
 filenames, media, or response payloads.
+
+Transferor and Cobank operations emit `jibit.transfer.operation` and
+`jibit.cobank.operation`. Financial identifiers and request bodies are excluded. An
+`unknown` outcome means reconciliation is required; it never means that a settlement or
+transfer was rejected.

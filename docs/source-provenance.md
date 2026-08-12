@@ -7,7 +7,7 @@ minimum metadata necessary to explain implementation provenance.
 | Source | Version or date | Used for | Distribution |
 | --- | --- | --- | --- |
 | Consolidated API catalog | OpenAPI 3.1, catalog version 1.0.0 | Cross-service paths and schemas | Not distributed |
-| Transferor REST API documentation | Version 2.5, 22 July 2024 | Transfers and settlement behavior | Not distributed |
+| Transferor REST API documentation | Version 2.5, 22 July 2024 | Transferor v2 authentication, batches, inquiry, receipts, balances, and reports | Not distributed |
 | Identicator technical documentation | Version 1.5.2, October 2024 | Inquiry and identity behavior | Not distributed |
 | Identity-service technical documentation | Version 2.6.1, September 2025 | Identity verification behavior | Not distributed |
 | Payment Gateway documentation | Retrieved August 2026 | PPG operations and empty response behavior | Not distributed |

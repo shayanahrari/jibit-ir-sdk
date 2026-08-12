@@ -23,9 +23,11 @@ from jibit.engine import RequestEngine
 from jibit.logging import AuditSink, NullAuditSink, StructuredLogger, get_structured_logger
 from jibit.retry import RetryPolicy
 from jibit.services.base import AuditedRequestExecutor
+from jibit.services.cobank import CobankService
 from jibit.services.identicator import IdenticatorService
 from jibit.services.kyc import KycService
 from jibit.services.payment_gateway import PaymentGatewayService
+from jibit.services.transfer import TransferService
 from jibit.transport import HTTPTransport, HttpxTransport
 from jibit.types import ServiceName
 
@@ -70,6 +72,8 @@ class JibitClient:
         self._lock_provider = lock_provider or ThreadLockProvider()
         self._authenticated_engines: dict[ServiceName, AuthenticatedRequestEngine] = {}
         self._payment_gateway: PaymentGatewayService | None = None
+        self._transfers: TransferService | None = None
+        self._cobank: CobankService | None = None
         self._identicator: IdenticatorService | None = None
         self._kyc: KycService | None = None
         self._closed = False
@@ -115,6 +119,34 @@ class JibitClient:
                 self._logger,
             )
         return self._payment_gateway
+
+    @property
+    def transfers(self) -> TransferService:
+        """Return the lazily initialized Transferor v2 facade."""
+        if self._transfers is None:
+            self._transfers = TransferService(
+                AuditedRequestExecutor(
+                    self.authenticated_engine(ServiceName.TRANSFERS),
+                    audit_sink=self.audit_sink,
+                    logger=self._logger,
+                    event_name="jibit.transfer.operation",
+                )
+            )
+        return self._transfers
+
+    @property
+    def cobank(self) -> CobankService:
+        """Return the lazily initialized Cobank settlement facade."""
+        if self._cobank is None:
+            self._cobank = CobankService(
+                AuditedRequestExecutor(
+                    self.authenticated_engine(ServiceName.COBANK),
+                    audit_sink=self.audit_sink,
+                    logger=self._logger,
+                    event_name="jibit.cobank.operation",
+                )
+            )
+        return self._cobank
 
     @property
     def identicator(self) -> IdenticatorService:

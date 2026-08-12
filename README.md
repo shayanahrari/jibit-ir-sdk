@@ -24,7 +24,8 @@ integration is available as an optional extra.
 | Service family | Package area | Status |
 | --- | --- | --- |
 | Payment Gateway (PPG) | `client.payment_gateway` | Implemented |
-| Transfers and settlements | `client.transfers` | Planned |
+| Transferor v2 | `client.transfers` | Implemented |
+| Cobank settlements | `client.cobank` | Implemented; environment verification required |
 | Identicator and inquiries | `client.identicator` | Implemented |
 | Biometric and KYC | `client.kyc` | Implemented; environment verification required |
 | Direct Debit | `client.direct_debit` | Planned |
@@ -84,6 +85,11 @@ times out, keep the SDK correlation ID and reconcile using the purchase or refun
 operation before deciding whether another business action is safe. See the
 [Payment Gateway guide](docs/payment-gateway.md).
 
+Transferor batch submissions and Cobank settlements are also never blindly retried. Use a
+unique `batch_id` or `record_track_id`, persist it before submission, and reconcile through
+the corresponding inquiry operation after any timeout or network failure. See the
+[transfers and settlements guide](docs/transfers-and-settlements.md).
+
 ## Direct Debit response limitation
 
 Five documented Direct Debit operations declare successful HTTP responses without a
@@ -98,6 +104,7 @@ body optional. Consumers must not depend on undocumented body fields.
 - [Authentication](docs/authentication.md)
 - [Payment Gateway](docs/payment-gateway.md)
 - [Identicator and KYC](docs/identity-and-kyc.md)
+- [Transfers and settlements](docs/transfers-and-settlements.md)
 - [Token storage](docs/token-storage.md)
 - [Error handling](docs/error-handling.md)
 - [Logging and audit events](docs/logging.md)

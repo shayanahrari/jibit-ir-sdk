@@ -19,3 +19,7 @@ are being prepared.
 - Typed Identicator banking, identity, postal, matching, legal, social, cheque, balance,
   reporting, availability, and health inquiries; KYC multipart video, photo, and OCR
   operations using explicit static bearer authentication and media-safe diagnostics.
+- Transferor v2 batch submission, inquiry, cancellation, explicit retry, filtering,
+  receipts, balances, usage, bank status, and batch generation; Cobank settlement creation,
+  reconciliation, batch inquiry, listing, account discovery, and receipt controls with
+  isolated token scopes and conservative financial retry behavior.

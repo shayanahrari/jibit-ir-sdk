@@ -218,7 +218,15 @@ class ServiceAuthenticator:
             raise JibitConfigurationError(
                 f"Service '{self.service.value}' has no cache-safe credential identifier"
             )
-        digest = hashlib.sha256(identifier.get_secret_value().encode()).hexdigest()[:20]
+        service_base_url = self._service_config.base_url or self._config.base_url
+        cache_identity = "\x00".join(
+            (
+                identifier.get_secret_value(),
+                str(service_base_url).rstrip("/"),
+                *sorted(self._service_config.scopes),
+            )
+        )
+        digest = hashlib.sha256(cache_identity.encode()).hexdigest()[:20]
         return f"{self._config.auth.cache_key_prefix}:{self.service.value}:{digest}"
 
     def _safe_get(self) -> TokenState | None:

@@ -95,7 +95,8 @@ def authenticator(
     ("service", "expected_path", "api_field"),
     [
         (ServiceName.PAYMENT_GATEWAY, "/ppg/v3/tokens", "apiKey"),
-        (ServiceName.TRANSFERS, "/cobank/v1/tokens/generate", "apiKey"),
+        (ServiceName.TRANSFERS, "/trf/v2/tokens/generate", "apiKey"),
+        (ServiceName.COBANK, "/cobank/v1/tokens/generate", "apiKey"),
         (ServiceName.IDENTICATOR, "/ide/v1/tokens/generate", "apiKey"),
         (
             ServiceName.DIRECT_DEBIT,
@@ -139,6 +140,33 @@ def test_cached_token_skips_network_and_invalidates() -> None:
 
     assert first is second
     assert len(engine.requests) == 1
+
+
+def test_token_cache_identity_includes_base_url_and_scopes() -> None:
+    """Tokens from distinct environments or scope grants never share cache entries."""
+    store = InMemoryTokenStore()
+    engine = StubRequestEngine(
+        [
+            raw_json({"accessToken": "scope-a", "refreshToken": "refresh-a"}),
+            raw_json({"accessToken": "scope-b", "refreshToken": "refresh-b"}),
+        ]
+    )
+    first = authenticator(
+        ServiceName.COBANK,
+        engine,
+        store=store,
+        config=config_for(ServiceName.COBANK, scopes=("SETTLEMENT",)),
+    )
+    second = authenticator(
+        ServiceName.COBANK,
+        engine,
+        store=store,
+        config=config_for(ServiceName.COBANK, scopes=("ACCOUNT",)),
+    )
+
+    assert first.get_token().access_value() == "scope-a"
+    assert second.get_token().access_value() == "scope-b"
+    assert len(engine.requests) == 2
 
 
 def test_identicator_refresh_sends_access_and_refresh_tokens() -> None:

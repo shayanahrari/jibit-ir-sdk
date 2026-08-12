@@ -27,3 +27,9 @@ For Payment Gateway purchase creation, use a unique `client_reference_number` an
 `inquire_purchase(client_reference_number=...)` after a timeout. For refunds, retain the
 returned `refund_id`, `batch_id`, and `transfer_id`; if the submission outcome itself is
 unknown, reconcile the purchase and your own ledger before resubmitting anything.
+
+For Transferor, persist a unique `batch_id` and unique `transfer_id` values, then call
+`client.transfers.inquire(...)` after uncertainty. For Cobank, persist a UUID
+`record_track_id` and call `client.cobank.inquire_settlement(record_track_id)`. These
+business references support reconciliation; the available contracts do not establish a
+provider idempotency header, so the SDK does not claim that resubmitting them is safe.

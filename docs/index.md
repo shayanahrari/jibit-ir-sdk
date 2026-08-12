@@ -15,3 +15,7 @@ verification, reversal, refund, inquiry, and uncertain-outcome guidance.
 For banking inquiries, identity matching, civil identity data, and biometric uploads, read
 the [Identicator and KYC guide](identity-and-kyc.md), including its data-minimization and
 environment-verification requirements.
+
+For wallet-to-IBAN batches and Cobank settlement processing, see the
+[transfers and settlements guide](transfers-and-settlements.md). It explains the separate
+authentication scopes and mandatory reconciliation workflow for uncertain outcomes.

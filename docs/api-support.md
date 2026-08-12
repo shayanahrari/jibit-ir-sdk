@@ -12,7 +12,8 @@ Verification states:
 | Service | Authentication | Current status | Notes |
 | --- | --- | --- | --- |
 | Payment Gateway | Bearer token with automatic acquisition and refresh | Implemented | Mock-tested from the available v3 contract; environment verification remains the integrator's responsibility. |
-| Cobank/transfers | Service token and refresh token | Planned | Financial submissions require reconciliation-safe behavior. |
+| Transferor v2 | Automatic service token and refresh | Implemented | Mock-tested from the available v2.5 contract; financial writes require inquiry reconciliation. |
+| Cobank settlements | Automatic scoped token and refresh | Unverified | Mock-tested from the consolidated catalog; routes, scopes, and transfer limits require environment confirmation. |
 | Identicator | Bearer token with automatic acquisition and refresh | Implemented | Mock-tested; deeply nested legal, foreigner, cheque, and corporation payloads use typed envelopes with raw nested mappings. |
 | Biometric/KYC | Configured static bearer token | Unverified | Mock-tested from conflicting catalog/snapshot contracts; environment confirmation is required. |
 | Direct Debit | Authentication and refresh token | Planned | Five operations are status-only. |
@@ -60,6 +61,47 @@ is determined by the HTTP status and an optional body is preserved without inter
 The four PPG refund actions above have documented successful statuses but no response-body
 schema. Their `APIResponse[StatusResult]` keeps `raw_body` only as uninterpreted bytes.
 Do not build business behavior around body fields observed in a particular environment.
+
+## Transferor v2
+
+| SDK operation | HTTP contract | Model coverage | Retry classification |
+| --- | --- | --- | --- |
+| `submit_batch` | `POST /trf/v2/transfers` | Typed request/result | Unsafe; reconcile by `batch_id` |
+| `inquire` | `GET /trf/v2/transfers` | Typed | Read-only |
+| `cancel` | `DELETE /trf/v2/transfers` | Status-only | Unsafe; never automatic |
+| `retry_failed` | `PATCH /trf/v2/transfers` | Status-only | Unsafe; never automatic |
+| `filter_transfers` | `GET /trf/v2/transfers/filter` | Typed | Read-only |
+| `set_receipt_enabled` | `POST /trf/v2/receipts` | Typed | Unsafe; never automatic |
+| `get_balances` | `GET /trf/v2/balances` | Typed | Read-only |
+| `get_daily_usage_report` | `GET /trf/v2/reports/daily` | Typed | Read-only |
+| `get_supported_normal_banks` | `GET /trf/v2/banks/normal` | Typed | Read-only |
+| `get_active_normal_banks` | `GET /trf/v2/banks/status` | Typed | Read-only |
+| `generate_batch` | `POST /trf/v2/batch/generate` | Typed request/result | Idempotent helper |
+
+Transferor creation has business references but no documented idempotency header.
+`batch_id` and `transfer_id` support inquiry; they do not authorize blind resubmission.
+Cancellation and explicit provider retry have no documented response schema and are
+status-only. Public receipt state is conservatively treated as unsafe because the contract
+does not establish idempotency semantics.
+
+## Cobank settlements
+
+| SDK operation | HTTP contract | Model coverage | Retry classification |
+| --- | --- | --- | --- |
+| `create_settlement` | `POST /cobank/v1/orders/settlement` | Typed | Unsafe; reconcile by `record_track_id` |
+| `inquire_settlement` | `GET .../settlement/{trackId}` | Typed | Read-only |
+| `batch_inquire_settlements` | `POST .../settlement/batch-inquiry` | Typed | Idempotent inquiry |
+| `list_settlements` | `GET .../settlement/list` | Typed | Read-only |
+| `get_merchant_accounts` | `GET /cobank/v1/accounts/` | Flexible safe container | Read-only |
+| `set_settlement_receipt` | `PUT .../{reference}/receipt-link` | Typed | Idempotent |
+| `set_record_receipt` | `PUT .../{reference}/records/{record}/receipt-link` | Typed | Idempotent |
+
+The Cobank catalog documents many additional statement, refund, collect, waiting-state, and
+augmented-transfer mutation endpoints. They are intentionally not exposed in this phase:
+their safe workflow, permissions, reconciliation rules, or stable response expectations
+have not been independently verified. Merchant-account configuration is provider-evolving
+and therefore remains a typed root container of raw mappings. Cobank is environment-
+unverified even though all exposed operations are mock-tested.
 
 ## Identicator
 

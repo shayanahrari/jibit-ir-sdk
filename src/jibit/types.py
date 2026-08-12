@@ -11,6 +11,7 @@ class ServiceName(str, Enum):
 
     PAYMENT_GATEWAY = "payment_gateway"
     TRANSFERS = "transfers"
+    COBANK = "cobank"
     IDENTICATOR = "identicator"
     KYC = "kyc"
     DIRECT_DEBIT = "direct_debit"

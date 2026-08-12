@@ -16,6 +16,7 @@ nav:
   - Token storage: token-storage.md
   - Payment Gateway: payment-gateway.md
   - Identicator and KYC: identity-and-kyc.md
+  - Transfers and settlements: transfers-and-settlements.md
   - Error handling: error-handling.md
   - Logging and audit: logging.md
   - Retry and idempotency: retry-and-idempotency.md

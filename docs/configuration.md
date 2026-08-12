@@ -15,6 +15,15 @@ client = JibitClient.from_config(
             "api_key": os.environ["JIBIT_PPG_API_KEY"],
             "secret_key": os.environ["JIBIT_PPG_SECRET_KEY"],
         },
+        "transfers": {
+            "api_key": os.environ["JIBIT_TRANSFEROR_API_KEY"],
+            "secret_key": os.environ["JIBIT_TRANSFEROR_SECRET_KEY"],
+        },
+        "cobank": {
+            "api_key": os.environ["JIBIT_COBANK_API_KEY"],
+            "secret_key": os.environ["JIBIT_COBANK_SECRET_KEY"],
+            "scopes": ["SETTLEMENT"],
+        },
         "kyc": {
             "access_token": os.environ["JIBIT_KYC_ACCESS_TOKEN"],
         },
@@ -57,3 +66,8 @@ variables or a secrets manager and must never be stored in application source co
 Credential methods are mutually exclusive per service. Token-managed services use an
 `api_key` and `secret_key`; KYC currently uses a supplied `access_token` because no safe
 acquisition or refresh contract is available. A static token is never refreshed implicitly.
+
+Transferor and Cobank are separate service scopes even when one Jibit account enables both.
+Configure their credentials independently. A service `base_url` override is prepended to
+the full SDK route; use the deployment origin rather than including `/trf` or `/cobank` a
+second time.
