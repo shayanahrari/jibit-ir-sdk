@@ -1,0 +1,88 @@
+# Configuration
+
+`JibitConfig` validates SDK-wide behavior and keeps every service's credentials in an
+isolated scope. Unknown fields and incomplete credential pairs are rejected before a
+network request is attempted.
+
+```python
+import os
+
+from jibit import JibitClient
+
+client = JibitClient.from_config(
+    {
+        "payment_gateway": {
+            "api_key": os.environ["JIBIT_PPG_API_KEY"],
+            "secret_key": os.environ["JIBIT_PPG_SECRET_KEY"],
+        },
+        "transfers": {
+            "api_key": os.environ["JIBIT_TRANSFEROR_API_KEY"],
+            "secret_key": os.environ["JIBIT_TRANSFEROR_SECRET_KEY"],
+        },
+        "cobank": {
+            "api_key": os.environ["JIBIT_COBANK_API_KEY"],
+            "secret_key": os.environ["JIBIT_COBANK_SECRET_KEY"],
+            "scopes": ["SETTLEMENT"],
+        },
+        "kyc": {
+            "access_token": os.environ["JIBIT_KYC_ACCESS_TOKEN"],
+        },
+        "direct_debit": {
+            "api_key": os.environ["JIBIT_DIRECT_DEBIT_API_KEY"],
+            "secret_key": os.environ["JIBIT_DIRECT_DEBIT_SECRET_KEY"],
+        },
+        "sms": {
+            "api_key": os.environ["JIBIT_SMS_API_KEY"],
+            "secret_key": os.environ["JIBIT_SMS_SECRET_KEY"],
+        },
+        "contracts": {
+            "api_key": os.environ["JIBIT_MZAHUB_API_KEY"],
+            "secret_key": os.environ["JIBIT_MZAHUB_SECRET_KEY"],
+        },
+        "timeout": {
+            "connect": 5,
+            "read": 30,
+            "write": 30,
+            "pool": 5,
+        },
+        "retry": {
+            "max_attempts": 3,
+            "base_delay": 0.25,
+            "max_delay": 4,
+            "jitter_ratio": 0.1,
+        },
+        "auth": {
+            "expiry_leeway_seconds": 60,
+            "unknown_access_token_ttl_seconds": None,
+            "cache_key_prefix": "jibit:tokens",
+        },
+    }
+)
+```
+
+Credentials may also be nested under a `services` mapping. Advanced consumers can inject
+an HTTP transport, token store, lock provider, logger, audit sink, retry policy, sleep
+function, wall clock, monotonic clock, and correlation-ID factory directly into
+`JibitClient`. These extension points support application observability and deterministic
+testing without changing safe defaults.
+
+## Safe defaults
+
+- TLS verification is enabled.
+- Request bodies and response bodies are not logged.
+- Only operations explicitly classified as safe can be retried.
+- A private HTTP connection pool is closed by the client context manager.
+- An injected transport remains owned by the application and is never closed by the SDK.
+- Tokens are stored in a thread-safe in-memory store unless another store is injected.
+
+Do not disable TLS verification in production. Credentials should come from environment
+variables or a secrets manager and must never be stored in application source code.
+
+Credential methods are mutually exclusive per service. Token-managed services use an
+`api_key` and `secret_key`; KYC currently uses a supplied `access_token` because no safe
+acquisition or refresh contract is available. A static token is never refreshed implicitly.
+
+Transferor and Cobank are separate service scopes even when one Jibit account enables both.
+Configure their credentials independently. A service `base_url` override is prepended to
+the full SDK route; use the deployment origin rather than including `/trf` or `/cobank` a
+second time.

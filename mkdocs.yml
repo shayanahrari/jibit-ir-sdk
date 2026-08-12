@@ -1,0 +1,38 @@
+site_name: Jibit IR SDK
+site_description: Unofficial Python SDK for Jibit APIs
+repo_url: https://github.com/shayanahrari/jibit-ir-sdk
+repo_name: shayanahrari/jibit-ir-sdk
+docs_dir: docs
+strict: true
+
+theme:
+  name: readthedocs
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Configuration: configuration.md
+  - Authentication: authentication.md
+  - Token storage: token-storage.md
+  - Payment Gateway: payment-gateway.md
+  - Identicator and KYC: identity-and-kyc.md
+  - Transfers and settlements: transfers-and-settlements.md
+  - Direct Debit: direct-debit.md
+  - SMS and contracts: sms-and-contracts.md
+  - Webhooks and callbacks: webhooks.md
+  - Django integration: django.md
+  - Error handling: error-handling.md
+  - Logging and audit: logging.md
+  - Retry and idempotency: retry-and-idempotency.md
+  - API support: api-support.md
+  - Versioning and compatibility: versioning.md
+  - Production checklist: production-checklist.md
+  - Source provenance: source-provenance.md
+  - Decisions:
+      - Package architecture: decisions/0001-package-architecture.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - tables
