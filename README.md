@@ -6,7 +6,6 @@ Jibit IR SDK provides a typed, secure, framework-independent client for Jibit pa
 transfer, inquiry, identity, KYC, direct-debit, SMS, and contract-signing APIs. Django
 integration is available as an optional extra.
 
-> This project is under active development and is not yet suitable for production use.
 > It is not affiliated with, endorsed by, or sponsored by Jibit.
 
 Official service-provider website: [jibit.ir](https://jibit.ir/)
